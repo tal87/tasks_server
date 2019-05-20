@@ -12,7 +12,7 @@ mongoClient.connect(url, (err, db) => {
   let dbo = db.db("bjgtlg6ithkz39l");
 
   app.get("/", (req, res) => {
-    res.end("done");
+    res.end("done2");
   });
 
   app.get("/api/tasks", (req, res) => {

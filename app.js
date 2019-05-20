@@ -11,6 +11,10 @@ mongoClient.connect(url, (err, db) => {
   if (err) throw err;
   let dbo = db.db("bjgtlg6ithkz39l");
 
+  app.get("/", (req, res) => {
+    res.end("done");
+  });
+
   app.get("/api/tasks", (req, res) => {
     res.setHeader("access-control-allow-origin", "*");
     res.contentType("application/json");

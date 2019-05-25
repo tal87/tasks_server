@@ -34,6 +34,10 @@ mongoClient.connect(url, (err, db) => {
   app.options("/api/tasks", (req, res) => {
     res.setHeader("access-control-allow-origin", "*");
     res.setHeader("Access-Control-Allow-Headers", "content-type");
+    res.setHeader(
+      "access-control-allow-methods",
+      "GET, POST, OPTIONS, PUT, DELETE"
+    );
     res.end();
   });
 
@@ -44,15 +48,29 @@ mongoClient.connect(url, (err, db) => {
         throw err;
       }
 
-      collection.insert(
-        { subject: req.body.subject, text: req.body.text },
-        (err, result) => {
-          if (!err) {
-            console.log(result);
-            res.end("done");
-          }
+      collection.insert({ text: req.body.text }, (err, result) => {
+        if (!err) {
+          // console.log(result);
+          res.end("done");
         }
-      );
+      });
+    });
+  });
+
+  app.delete("/api/tasks", (req, res) => {
+    res.setHeader("access-control-allow-origin", "*");
+    dbo.collection("tasks", (err, collection) => {
+      if (err) {
+        throw err;
+      }
+
+      console.log(`id: ${req.query["id"]}`);
+      collection.deleteOne({ _id: req.query["id"] }, (err, result) => {
+        if (!err) {
+          // console.log(result);
+          res.end("done");
+        }
+      });
     });
   });
 

@@ -1,5 +1,6 @@
 const app = require("express")();
 const mongoClient = require("mongodb").MongoClient;
+const ObjectID = require("mongodb").ObjectID;
 const bodyParser = require("body-parser");
 
 app.use(bodyParser.json());
@@ -48,9 +49,8 @@ mongoClient.connect(url, (err, db) => {
         throw err;
       }
 
-      collection.insert({ text: req.body.text }, (err, result) => {
+      collection.insert({ text: req.body.text }, () => {
         if (!err) {
-          // console.log(result);
           res.end("done");
         }
       });
@@ -64,12 +64,8 @@ mongoClient.connect(url, (err, db) => {
         throw err;
       }
 
-      console.log(`id: ${req.query["id"]}`);
-      collection.deleteOne({ _id: req.query["id"] }, (err, result) => {
-        if (!err) {
-          // console.log(result);
-          res.end("done");
-        }
+      collection.deleteOne({ _id: ObjectID(req.query["id"]) }, () => {
+        res.end("done");
       });
     });
   });

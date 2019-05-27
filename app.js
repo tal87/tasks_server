@@ -24,7 +24,12 @@ mongoClient.connect(url, (err, db) => {
         throw err;
       }
 
-      collection.find().toArray((err, docs) => {
+      let uid = req.query["user"];
+      if (!uid) {
+        uid = "";
+      }
+
+      collection.find({ users: [] }).toArray((err, docs) => {
         if (!err) {
           res.end(JSON.stringify(docs));
         }
@@ -49,7 +54,7 @@ mongoClient.connect(url, (err, db) => {
         throw err;
       }
 
-      collection.insert({ text: req.body.text }, () => {
+      collection.insert({ text: req.body.text, users: [] }, () => {
         if (!err) {
           res.end("done");
         }

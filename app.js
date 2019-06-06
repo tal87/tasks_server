@@ -18,6 +18,7 @@ mongoClient.connect(url, (err, db) => {
 
   app.get("/api/login", (req, res) => {
     res.setHeader("access-control-allow-origin", "*");
+    res.contentType("application/json");
     dbo.collection("users", (err, collection) => {
       if (err) {
         throw err;
@@ -38,7 +39,7 @@ mongoClient.connect(url, (err, db) => {
           return;
         }
 
-        res.end("ok");
+        res.end(JSON.stringify({ id: result._id }));
       });
     });
   });
@@ -52,11 +53,12 @@ mongoClient.connect(url, (err, db) => {
       }
 
       let uid = req.query["user"];
+      users = [uid];
       if (!uid) {
-        uid = "";
+        users = [];
       }
 
-      collection.find({ users: [] }).toArray((err, docs) => {
+      collection.find({ users }).toArray((err, docs) => {
         if (!err) {
           res.end(JSON.stringify(docs));
         }
@@ -81,7 +83,12 @@ mongoClient.connect(url, (err, db) => {
         throw err;
       }
 
-      collection.insert({ text: req.body.text, users: [] }, () => {
+      let users = [req.body.id];
+      if (!req.body.id) {
+        users = [];
+      }
+
+      collection.insert({ text: req.body.text, users }, () => {
         if (!err) {
           res.end("done");
         }

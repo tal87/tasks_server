@@ -16,6 +16,33 @@ mongoClient.connect(url, (err, db) => {
     res.end("done2");
   });
 
+  app.get("/api/login", (req, res) => {
+    res.setHeader("access-control-allow-origin", "*");
+    dbo.collection("users", (err, collection) => {
+      if (err) {
+        throw err;
+      }
+
+      let uid = req.query["user"];
+      let password = req.query["password"];
+      if (!uid || !password) {
+        res.statusCode = 400;
+        res.end("bad request");
+        return;
+      }
+
+      collection.findOne({ username: uid }, (err, result) => {
+        if (!result || result.password !== password) {
+          res.statusCode = 401;
+          res.end("bad user or password");
+          return;
+        }
+
+        res.end("ok");
+      });
+    });
+  });
+
   app.get("/api/tasks", (req, res) => {
     res.setHeader("access-control-allow-origin", "*");
     res.contentType("application/json");

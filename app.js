@@ -76,6 +76,16 @@ mongoClient.connect(url, (err, db) => {
     res.end();
   });
 
+  app.options("/api/register", (req, res) => {
+    res.setHeader("access-control-allow-origin", "*");
+    res.setHeader("Access-Control-Allow-Headers", "content-type");
+    res.setHeader(
+      "access-control-allow-methods",
+      "GET, POST, OPTIONS, PUT, DELETE"
+    );
+    res.end();
+  });
+
   app.post("/api/tasks", (req, res) => {
     res.setHeader("access-control-allow-origin", "*");
     dbo.collection("tasks", (err, collection) => {
@@ -92,6 +102,20 @@ mongoClient.connect(url, (err, db) => {
         if (!err) {
           res.end("done");
         }
+      });
+    });
+  });
+
+  app.post("/api/register", (req, res) => {
+    res.setHeader("access-control-allow-origin", "*");
+    res.contentType("application/json");
+    dbo.collection("users", (err, collection) => {
+      if (err) {
+        throw err;
+      }
+
+      collection.insertOne(req.body["data"], (err2, result) => {
+        res.end(JSON.stringify({ id: result.insertedId }));
       });
     });
   });

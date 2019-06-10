@@ -3,11 +3,12 @@ const mongoClient = require("mongodb").MongoClient;
 const ObjectID = require("mongodb").ObjectID;
 const bodyParser = require("body-parser");
 
+let { config } = require("./config");
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-let url =
-  "mongodb://uj2rrk4jfrv4c4c416es:RenWBG0XFUc756E8Mld9@bjgtlg6ithkz39l-mongodb.services.clever-cloud.com:27017/bjgtlg6ithkz39l";
+let url = config.connection;
 mongoClient.connect(url, (err, db) => {
   if (err) throw err;
   let dbo = db.db("bjgtlg6ithkz39l");

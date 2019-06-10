@@ -1,5 +1,3 @@
-const config = {
+module.exports = {
   connection: process.env.connection
 };
-
-export { config };

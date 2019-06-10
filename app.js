@@ -3,11 +3,12 @@ const mongoClient = require("mongodb").MongoClient;
 const ObjectID = require("mongodb").ObjectID;
 const bodyParser = require("body-parser");
 
-let { config } = require("./config");
+let config = require("./config");
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+console.log(config.connection);
 let url = config.connection;
 mongoClient.connect(url, (err, db) => {
   if (err) throw err;

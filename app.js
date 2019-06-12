@@ -10,7 +10,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 console.log(config.connection);
 let url = config.connection;
-mongoClient.connect(url, (err, db) => {
+mongoClient.connect(url, { useNewUrlParser: true }, (err, db) => {
   if (err) throw err;
   let dbo = db.db("bjgtlg6ithkz39l");
 

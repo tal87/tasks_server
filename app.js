@@ -88,8 +88,8 @@ mongoClient.connect(url, (err, db) => {
     res.end();
   });
 
-  app.post("/api/tasks", (req, res) => {
-    res.setHeader("access-control-allow-origin", "*");
+  app.post("/api/tasks", (req, response) => {
+    response.setHeader("access-control-allow-origin", "*");
     dbo.collection("tasks", (err, collection) => {
       if (err) {
         throw err;
@@ -100,9 +100,9 @@ mongoClient.connect(url, (err, db) => {
         users = [];
       }
 
-      collection.insert({ text: req.body.text, users }, () => {
+      collection.insertOne({ text: req.body.text, users }, (err, result) => {
         if (!err) {
-          res.end("done");
+          response.end("done");
         }
       });
     });

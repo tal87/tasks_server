@@ -55,12 +55,12 @@ mongoClient.connect(url, { useNewUrlParser: true }, (err, db) => {
       }
 
       let uid = req.query["user"];
-      users = [uid];
-      if (!uid) {
-        users = [];
-      }
+      // users = [uid];
+      // if (!uid) {
+      //   users = [];
+      // }
 
-      collection.find({ users }).toArray((err, docs) => {
+      collection.find({ users: uid }).toArray((err, docs) => {
         if (!err) {
           res.end(JSON.stringify(docs));
         }
@@ -105,6 +105,30 @@ mongoClient.connect(url, { useNewUrlParser: true }, (err, db) => {
           response.end("done");
         }
       });
+    });
+  });
+
+  app.put("/api/tasks", (req, response) => {
+    response.setHeader("access-control-allow-origin", "*");
+    dbo.collection("tasks", (err, collection) => {
+      if (err) {
+        throw err;
+      }
+
+      let task = req.body.task;
+      let users = [req.body.id];
+      if (!req.body.id) {
+        users = [];
+      }
+
+      collection.updateOne(
+        { _id: ObjectID(task._id) },
+        { $set: { users: task.users } },
+        (err, result) => {
+          console.log(err);
+          response.send("done");
+        }
+      );
     });
   });
 

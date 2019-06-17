@@ -110,25 +110,31 @@ mongoClient.connect(url, { useNewUrlParser: true }, (err, db) => {
 
   app.put("/api/tasks", (req, response) => {
     response.setHeader("access-control-allow-origin", "*");
-    dbo.collection("tasks", (err, collection) => {
+    dbo.collection("users", async (err, collection) => {
       if (err) {
         throw err;
       }
 
       let task = req.body.task;
-      let users = [req.body.id];
-      if (!req.body.id) {
-        users = [];
-      }
+      // console.log(task.users);
+      task.users = [
+        ...task.users,
+        ...(await collection
+          .find(
+            { username: { $in: req.body.users } },
+            { projection: { _id: 1 } }
+          )
+          .toArray()).map(obj => obj._id.toString())
+      ];
 
-      collection.updateOne(
-        { _id: ObjectID(task._id) },
-        { $set: { users: task.users } },
-        (err, result) => {
+      task._id = ObjectID(task._id);
+      console.log(task);
+      dbo.collection("tasks", async (err, collection) => {
+        collection.update({ _id: ObjectID(task._id) }, task, (err, result) => {
           console.log(err);
-          response.send("done");
-        }
-      );
+          response.end("done");
+        });
+      });
     });
   });
 

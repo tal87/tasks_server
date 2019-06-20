@@ -46,7 +46,7 @@ mongoClient.connect(url, { useNewUrlParser: true }, (err, db) => {
     });
   });
 
-  app.get("/api/tasks", (req, res) => {
+  app.get("/api/task/:taskId", (req, res) => {
     res.setHeader("access-control-allow-origin", "*");
     res.contentType("application/json");
     dbo.collection("tasks", (err, collection) => {
@@ -55,11 +55,23 @@ mongoClient.connect(url, { useNewUrlParser: true }, (err, db) => {
       }
 
       let uid = req.query["user"];
-      // users = [uid];
-      // if (!uid) {
-      //   users = [];
-      // }
+      collection.find({ users: uid }).toArray((err, docs) => {
+        if (!err) {
+          res.end(JSON.stringify(docs));
+        }
+      });
+    });
+  });
 
+  app.get("/api/tasks/:uid", (req, res) => {
+    res.setHeader("access-control-allow-origin", "*");
+    res.contentType("application/json");
+    dbo.collection("tasks", (err, collection) => {
+      if (err) {
+        throw err;
+      }
+
+      let uid = req.params.uid;
       collection.find({ users: uid }).toArray((err, docs) => {
         if (!err) {
           res.end(JSON.stringify(docs));
